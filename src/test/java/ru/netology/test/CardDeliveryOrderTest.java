@@ -5,7 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import com.google.j2objc.annotations.LoopTranslation;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
-import ru.netology.delivery.data.DataGenerator;
+import ru.netology.data.DataGenerator;
 
 
 import java.time.LocalDate;
