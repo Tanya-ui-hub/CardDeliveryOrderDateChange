@@ -42,4 +42,51 @@ class CardDeliveryOrderTest {
         $(".notification_status_ok").shouldBe(visible);
         $(".notification__content").shouldHave(exactText("Встреча успешно запланирована на " + DataGenerator.generateDate(7)));
     }
+
+    @Test
+    void shouldEnterAnIncorrectFirstAndLastName() {
+        open("http://localhost:9999");
+        SelenideElement form = $(".form");
+        form.$("[data-test-id=city] input").setValue(city);
+        form.$("[data-test-id=date] input").doubleClick().sendKeys(DataGenerator.generateDate(3));
+        $("[data-test-id=name] input").setValue("Ivanov Ivan");
+        $("[data-test-id=phone] input").setValue(phone);
+        $("[data-test-id=agreement]").click();
+        $(".button").click();
+        $(byText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+    }
+
+    @Test
+    void shouldEnterAnIncorrectCity() {
+        open("http://localhost:9999");
+        SelenideElement form = $(".form");
+        form.$("[data-test-id=city] input").setValue("Ухта");
+        form.$("[data-test-id=date] input").doubleClick().sendKeys(DataGenerator.generateDate(3));
+        $("[data-test-id=name] input").setValue(name);
+        $("[data-test-id=phone] input").setValue(phone);
+        $("[data-test-id=agreement]").click();
+        $(".button").click();
+        $("[data-test-id=city].input_invalid").shouldHave(exactText("Доставка в выбранный город недоступна"));
+    }
+
+    @Test
+    void shouldInterAnIncorrectDate() {
+        open("http://localhost:9999");
+        SelenideElement form = $(".form");
+        form.$("[data-test-id=city] input").setValue(city);
+        form.$("[data-test-id=date] input").doubleClick().sendKeys(DataGenerator.generateDate(-3));
+        $("[data-test-id=name] input").setValue(name);
+        $("[data-test-id=phone] input").setValue(phone);
+        $("[data-test-id=agreement]").click();
+        $(".button").click();
+        $("[data-test-id=date]").shouldHave(exactText("Заказ на выбранную дату невозможен"));
+    }
+
+    @Test
+    void shouldLeaveAllFieldsEmpty() {
+        open("http://localhost:9999");
+        SelenideElement form = $(".form");
+        $(".button").click();
+        $("[data-test-id=city]").shouldHave(exactText("Поле обязательно для заполнения"));
+    }
 }
